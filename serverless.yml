@@ -4,17 +4,27 @@ service: serverless-image-labelling
 plugins:
   - serverless-python-requirements
 
+package:
+  individually: true
+  include:
+    - '!*'
+    - '!**'
+    - handlers/*.py
+
 provider:
   name: aws
   logs:
-    restApi: true
-  runtime: python3.7
+    restApi:
+      role: arn:aws:iam::774013796425:role/ServerlessAPIGatewayLogsRole
+      roleManagedExternally: true # disables automatic role creation/checks done by Serverless
+      # + create role manually: https://coady.tech/aws-cloudwatch-logs-arn/
+  runtime: python3.11
   stage: dev
   region: us-east-1
   environment:
     LABEL_TO_S3_MAPPING_TABLE: 'label-to-s3-mapping-table'
     MASTER_IMAGE_TABLE: 'master-image-label-table'
-    SERVERLESS_IMAGE_LABELLING_BUCKET: 'serverless-image-labelling-bucket'
+    SERVERLESS_IMAGE_LABELLING_BUCKET: 'serverless-image-labelling-bucket-arye'
     REGION_NAME: 'us-east-1'
 
   iamRoleStatements:
